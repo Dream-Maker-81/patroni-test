@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: patroni-test
+  datasource:
+    type: org.apache.commons.dbcp2.BasicDataSource
+    #url: jdbc:postgresql://localhost:10432,localhost:9432,localhost:8432,localhost:7432,localhost:6432,postgres-billing1.msk.dc:5433/bcoreokkorus?targetServerType=secondary&connectTimeout=5
+    url: jdbc:postgresql://localhost:6432/test_postgres?targetServerType=primary&connectTimeout=5&prepareThreshold=0
+    dbcp2:
+      max-total: 10
+      max-idle: 1
+      test-on-borrow: true
+      validation-query: SELECT 1
+      max-wait-millis: 10000
+      remove-abandoned-on-borrow: true
+      remove-abandoned-timeout: 60
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+    username: postgres
+    password: postgres
+management:
+  tracing:
+    enabled: false
+  health:
+    db:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  endpoint:
+    prometheus:
+      enabled: true
+logging:
+  level:
+    root: DEBUG
+    sun.rmi: INFO
+    java.io: INFO
+    org.apache.tomcat: INFO
+    org.apache.catalina: INFO
+    javax.management: INFO
+    org.postgresql: DEBUG
+    org.apache.commons.dbcp2: TRACE
+    org.apache.commons.pool2: TRACE

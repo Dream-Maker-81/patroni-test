@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  bouncer:
+    image: pgbouncer/pgbouncer:latest
+    environment:
+      DATABASES_HOST: db
+      DATABASES_USER: postgres
+      DATABASES_PASSWORD: postgres
+      DATABASES_DBNAME: test
+      DATABASES_POOL_MODE: transaction
+      DATABASES_MAX_DB_CONNECTIONS: 10000
+      DATABASES_CLIENT_SIDE_DBNAME: test_postgres
+      PGBOUNCER_LOG_DISCONNECTIONS: 1
+      PGBOUNCER_LOG_CONNECTIONS: 1
+    ports:
+      - "6432:6432"
+  db:
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    command: -c ssl=on -c ssl_cert_file=/var/lib/postgresql/server.crt -c ssl_key_file=/var/lib/postgresql/server.key
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdataTEST:/var/lib/postgresql/data
+      - ./server.crt:/var/lib/postgresql/server.crt
+      - ./server.key:/var/lib/postgresql/server.key
+
+volumes:
+  pgdataTEST:
